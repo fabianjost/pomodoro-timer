@@ -5,17 +5,20 @@ const PomodoroTimer: React.FC = () => {
   const [seconds, setSeconds] = useState<number>(0);
   const [isRunning, setIsRunning] = useState<boolean>(false);
 
-  let audio: HTMLAudioElement;
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const stopAudio = () => {
-    audio.pause();
-    audio.currentTime = 0;
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
   };
 
   useEffect(() => {
-    // Initialize audio object
-    audio = new Audio('/alarm.mp3');
+    audioRef.current = new Audio('/alarm.mp3');
+  }, []);
 
+  useEffect(() => {
     let interval: NodeJS.Timeout | undefined;
     if (isRunning) {
       interval = setInterval(() => {
@@ -25,7 +28,9 @@ const PomodoroTimer: React.FC = () => {
           if (minutes === 0) {
             clearInterval(interval as NodeJS.Timeout);
             // Play the sound
-            audio.play();
+            if (audioRef.current) {
+              audioRef.current.play();
+            }
           } else {
             setMinutes(minutes - 1);
             setSeconds(59);
