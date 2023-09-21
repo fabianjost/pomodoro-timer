@@ -25,12 +25,16 @@ const config: GatsbyConfig = {
         icon_options: {
           purpose: `any maskable`,
         },
+        cache_busting_mode: 'none',
       },
     },
     {
       resolve: `gatsby-plugin-offline`,
       options: {
         precachePages: [`/*`],
+        workboxConfig: {
+          globPatterns: ['**/*.{jpg,png,webp,svg,mp3}'],
+       }
       },
     },
   ]
